@@ -5,7 +5,7 @@ import sys
 from telegram import Update
 from telegram.ext import Application, CommandHandler, ContextTypes, MessageHandler, filters
 
-from bot.config import ADMIN_IDS, BOT_TOKEN
+from bot.config import ADMIN_IDS, ADMIN_USERNAMES, BOT_TOKEN
 from bot.database import init_db
 from bot.handlers.add_flow import build_add_conversation
 from bot.handlers.commands import (
@@ -49,8 +49,10 @@ def main() -> None:
         logger.error("BOT_TOKEN tanımlı değil. .env dosyasını kontrol edin.")
         sys.exit(1)
 
-    if not ADMIN_IDS:
-        logger.warning("ADMIN_IDS boş — yetkili komutlar devre dışı.")
+    if not ADMIN_IDS and not ADMIN_USERNAMES:
+        logger.warning("Yetkili tanımlı değil — /ekle ve /sil devre dışı.")
+    elif ADMIN_USERNAMES:
+        logger.info("Yetkili kullanıcı adları: %s", ", ".join(sorted(ADMIN_USERNAMES)))
 
     ensure_single_instance()
     init_db()

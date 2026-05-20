@@ -30,7 +30,9 @@ python -m bot.main
 
 1. [@BotFather](https://t.me/BotFather) → bot oluştur → `BOT_TOKEN`
 2. `/setprivacy` → **Disable** (grup mesajlarını görmesi için)
-3. [@userinfobot](https://t.me/userinfobot) → `ADMIN_IDS` için kendi ID'niz
+3. Yetkili tanımı (birini veya ikisini kullanın):
+   - **Kullanıcı adı (önerilen, Railway):** Telegram → Ayarlar → Kullanıcı adı (ör. `kadirbasgoren`) → `ADMIN_USERNAMES=kadirbasgoren`
+   - **Sayısal ID:** [@userinfobot](https://t.me/userinfobot) → `ADMIN_IDS=123456789`
 
 ## Railway deploy
 
@@ -41,8 +43,11 @@ python -m bot.main
 | Değişken | Zorunlu | Açıklama |
 |----------|---------|----------|
 | `BOT_TOKEN` | Evet | BotFather token |
-| `ADMIN_IDS` | Evet | Örn. `123456789` veya `111,222` |
+| `ADMIN_IDS` | Hayır* | Örn. `8166633577` veya `111,222` |
+| `ADMIN_USERNAMES` | Hayır* | Örn. `kadirbasgoren,admin2` (@ yok) |
 | `DATABASE_URL` | Otomatik | PostgreSQL plugin bağlar |
+
+\* `ADMIN_IDS` veya `ADMIN_USERNAMES` en az birinde tanımlı olmalı (ikisi birlikte de kullanılabilir).
 | `ALLOWED_GROUP_IDS` | Hayır | Sadece belirli grup(lar) |
 | `MATCH_THRESHOLD` | Hayır | Varsayılan `82` |
 

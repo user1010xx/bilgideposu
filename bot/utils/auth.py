@@ -1,6 +1,6 @@
 from telegram import Update
 
-from bot.config import ADMIN_IDS, ALLOWED_GROUP_IDS
+from bot.config import ADMIN_IDS, ADMIN_USERNAMES, ALLOWED_GROUP_IDS
 
 
 def is_group_chat(update: Update) -> bool:
@@ -17,7 +17,13 @@ def is_allowed_group(update: Update) -> bool:
 
 def is_admin(update: Update) -> bool:
     user = update.effective_user
-    return user is not None and user.id in ADMIN_IDS
+    if user is None:
+        return False
+    if user.id in ADMIN_IDS:
+        return True
+    if user.username and user.username.lower() in ADMIN_USERNAMES:
+        return True
+    return False
 
 
 async def reject_private(update: Update) -> bool:

@@ -19,6 +19,18 @@ ADMIN_IDS = {
     if x.strip().isdigit()
 }
 
+
+def _parse_usernames(raw: str) -> set[str]:
+    names = set()
+    for part in raw.split(","):
+        name = part.strip().lstrip("@").lower()
+        if name:
+            names.add(name)
+    return names
+
+
+ADMIN_USERNAMES = _parse_usernames(os.getenv("ADMIN_USERNAMES", ""))
+
 _allowed = os.getenv("ALLOWED_GROUP_IDS", "").strip()
 ALLOWED_GROUP_IDS = (
     {int(x.strip()) for x in _allowed.split(",") if x.strip().lstrip("-").isdigit()}
@@ -43,5 +55,7 @@ MAX_NORMALIZED_LENGTH = 2000
 # Telegram metin sınırı (güvenli pay)
 MAX_MESSAGE_LENGTH = 4000
 
-if not ADMIN_IDS:
-    logger.warning("ADMIN_IDS boş — /ekle ve /sil kimseye açık değil.")
+if not ADMIN_IDS and not ADMIN_USERNAMES:
+    logger.warning(
+        "ADMIN_IDS ve ADMIN_USERNAMES boş — /ekle ve /sil kimseye açık değil."
+    )
