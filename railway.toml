@@ -1,0 +1,8 @@
+[build]
+builder = "NIXPACKS"
+
+[deploy]
+startCommand = "python -m bot.main"
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 10
+# Railway dashboard: Settings → Replicas = 1 (çift polling önlenir)
