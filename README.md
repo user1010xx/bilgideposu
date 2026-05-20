@@ -48,12 +48,16 @@ python -m bot.main
 | `DATABASE_URL` | Otomatik | PostgreSQL plugin bağlar |
 
 \* `ADMIN_IDS` veya `ADMIN_USERNAMES` en az birinde tanımlı olmalı (ikisi birlikte de kullanılabilir).
-| `ALLOWED_GROUP_IDS` | Hayır | Sadece belirli grup(lar) |
+| `ALLOWED_GROUP_NAMES` | Önerilir | Örn. `BİLGİ` veya `BİLGİ,İkinci Grup` (@ yok, grup başlığı) |
+| `ALLOWED_GROUP_IDS` | Hayır | Sayısal chat ID (yedek / ek kısıt) |
 | `MATCH_THRESHOLD` | Hayır | Varsayılan `82` |
 
 4. **Settings → Replicas: 1** (iki örnek = çift mesaj)
-5. Yerelde bot çalışıyorsa **durdurun** (aynı token iki yerde olmasın)
-6. Deploy tamamlanınca logda `Application started` görünür
+5. **Grup kısıtı:** `ALLOWED_GROUP_NAMES=BİLGİ` (Telegram’daki grup adıyla birebir)
+6. Yerelde bot çalışıyorsa **durdurun** (aynı token iki yerde olmasın)
+7. Deploy tamamlanınca logda `Application started` ve `İzinli grup adları` görünür
+
+`ALLOWED_GROUP_NAMES` ve `ALLOWED_GROUP_IDS` boşsa bot **eklendiği her grupta** çalışır.
 
 `Procfile` → `worker: python -m bot.main` (HTTP port gerekmez, polling kullanır)
 

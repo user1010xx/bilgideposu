@@ -31,12 +31,34 @@ def _parse_usernames(raw: str) -> set[str]:
 
 ADMIN_USERNAMES = _parse_usernames(os.getenv("ADMIN_USERNAMES", ""))
 
-_allowed = os.getenv("ALLOWED_GROUP_IDS", "").strip()
+def _parse_group_names(raw: str) -> set[str]:
+    import re
+    import unicodedata
+
+    names = set()
+    for part in raw.split(","):
+        label = part.strip()
+        if not label:
+            continue
+        label = label.lower()
+        label = unicodedata.normalize("NFKD", label)
+        label = "".join(c for c in label if not unicodedata.combining(c))
+        label = re.sub(r"[^\w\s]", " ", label, flags=re.UNICODE)
+        label = re.sub(r"\s+", " ", label).strip()
+        if label:
+            names.add(label)
+    return names
+
+
+_allowed_ids = os.getenv("ALLOWED_GROUP_IDS", "").strip()
 ALLOWED_GROUP_IDS = (
-    {int(x.strip()) for x in _allowed.split(",") if x.strip().lstrip("-").isdigit()}
-    if _allowed
+    {int(x.strip()) for x in _allowed_ids.split(",") if x.strip().lstrip("-").isdigit()}
+    if _allowed_ids
     else None
 )
+
+_allowed_names = os.getenv("ALLOWED_GROUP_NAMES", "").strip()
+ALLOWED_GROUP_NAMES = _parse_group_names(_allowed_names) if _allowed_names else None
 
 _raw_db = os.getenv("DATABASE_URL", "").strip()
 if _raw_db.startswith("postgres://"):
@@ -59,3 +81,10 @@ if not ADMIN_IDS and not ADMIN_USERNAMES:
     logger.warning(
         "ADMIN_IDS ve ADMIN_USERNAMES boş — /ekle ve /sil kimseye açık değil."
     )
+
+if ALLOWED_GROUP_IDS is None and ALLOWED_GROUP_NAMES is None:
+    logger.warning(
+        "ALLOWED_GROUP_IDS / ALLOWED_GROUP_NAMES boş — bot eklendiği TÜM gruplarda çalışır."
+    )
+elif ALLOWED_GROUP_NAMES:
+    logger.info("İzinli grup adları: %s", ", ".join(sorted(ALLOWED_GROUP_NAMES)))
